@@ -77,9 +77,15 @@ ASTRO currently supports a variety of celestial objects, each with unique charac
 - **Rings**:
   - **Planetary Rings**: Rings composed of dust, rock, and ice that orbit around planets.
 
+---
+
 ## Demo
 
-To view the simulation in action, visit the [live demo](https://blindbyte98.github.io/ASTRO/).
+To view the simulation in action, visit the [live demo](https://blindbyte98.github.io/ASTRO/). 
+
+The project and demo were tested and developed on a semi-modern Windows desktop PC using the Google Chrome browser.
+
+---
 
 ## Installation
 
@@ -117,9 +123,24 @@ Explore the star system with interactive controls, observe celestial dynamics, a
 
 Modify simulation parameters in the `index.html` file to adjust star types, planetary properties, and orbital mechanics.
 
+---
+
 ## Contributing
 
-We welcome contributions to enhance the ASTRO simulation. Please follow standard guidelines for contributing to the project.
+We welcome and value contributions to the **ASTRO** simulation. To ensure our project’s quality and consistency, please adhere to the following principles:
+
+### Contribution Principles
+
+As the original creator of **ASTRO**, I, BlindByte, value contributions that align with these core principles:
+
+- **Scientific Accuracy:** Ensure all updates are based on established physics and astrophysics to maintain the simulation's scientific integrity.
+- **Realism:** Enhance the authentic portrayal of celestial mechanics and astronomical phenomena for a true-to-life experience.
+- **Immersiveness:** Enrich the simulation’s depth and beauty, creating a captivating representation of the universe.
+- **Focus on Physics:** Prioritize accurate physical simulations, reflecting realistic dynamics and interactions among celestial bodies.
+
+By adhering to these principles, you help make **ASTRO** a premier tool for both educational and research purposes. Thank you for your contributions!
+
+---
 
 ## License
 
