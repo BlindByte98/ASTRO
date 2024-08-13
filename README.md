@@ -84,7 +84,7 @@ ASTRO currently supports a variety of celestial objects, each with unique charac
 
 ## Demo
 
-To view the simulation in action, visit the [live demo](#) (replace with your live demo link).
+To view the simulation in action, visit the [live demo](https://blindbyte98.github.io/ASTRO/).
 
 ## Installation
 
