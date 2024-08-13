@@ -59,7 +59,7 @@ ASTRO currently supports a variety of celestial objects, each with unique charac
   - **Blue Giant**: Massive, hot stars with high luminosity.
   - **Supergiant**: Extremely large and luminous stars, often in the final stages of their evolution.
 
-![star4](https://github.com/user-attachments/assets/f4c1f767-16d8-4068-b379-6b378081f10a)
+![Starx](https://github.com/user-attachments/assets/97fc1c02-3615-4be5-b600-0bfaee4a3440)
 
 - **Planets**:
   - **Terrestrial Planets**: Rocky planets similar to Earth, with solid surfaces.
