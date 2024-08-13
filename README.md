@@ -1,8 +1,3 @@
-Here's the updated `README.md` with the requested attribution added:
-
----
-
-
 # ASTRO
 
 ## Overview
@@ -146,4 +141,3 @@ For questions or further information, feel free to reach out via the above links
 
 ---
 
-This version of the `README.md` includes your name and contact details, ensuring proper credit and allowing users to connect with you.
