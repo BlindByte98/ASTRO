@@ -1,0 +1,15 @@
+**KNOWN_ISSUES.txt**
+
+0. **Rendering Glitches on Mobile (iPhone/Safari)**  
+   There are occasional rendering issues when viewing the simulation on mobile devices, particularly iPhones using Safari.
+
+1. **Some Objects Still Need Visual Procedural Generation**  
+   Certain objects in the simulation are not yet using visual procedural generation and may appear less detailed.
+
+2. **Source Code Base Requires Refactoring**  
+   The codebase needs significant refactoring to improve ease of use, collaboration, contribution, scalability, modularity, flexibility, and maintainability.
+
+3. **Current Center of Solar System is Always a Main Sequence Star**  
+   The simulation currently defaults to a main sequence star as the center of the solar system.
+
+---

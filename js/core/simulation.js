@@ -1,35 +1,49 @@
-import * as THREE from "https://cdn.skypack.dev/three@0.129.0";
-import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js";
-import { EffectComposer } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/UnrealBloomPass.js";
+// simulation.js
 
+import {
+  THREE,
+  OrbitControls,
+  EffectComposer,
+  RenderPass,
+  UnrealBloomPass,
+} from "./dependencies.js";
+import {
+  G,
+  MIN_DISTANCE_FROM_STAR,
+  calculateOrbitalRadius,
+  calculateOrbitalVelocity,
+} from "./math.js";
+import {
+  INITIAL_VELOCITY_FACTOR_MULTIPLIER,
+  PLANET_RADIUS_MULTIPLIER,
+  ASTEROID_COUNT_MULTIPLIER,
+  NEBULA_PARTICLE_COUNT_MULTIPLIER,
+  MIN_DISTANCE_MULTIPLIER,
+  STAR_COLORS,
+  PLANET_COLORS,
+  MOON_COLOR,
+  ASTEROID_COLOR,
+  NEBULA_COLOR,
+  SHOW_RINGS,
+  ENABLE_BLOOM,
+} from "./config.js";
+
+// Variables and constants
 let scene, camera, renderer, controls, composer;
 const celestialBodies = [];
-const G = 6.6743e-11; // Gravitational constant
-const MIN_DISTANCE_FROM_STAR = 1.5; // Minimum distance from the central star to prevent overlapping
-const INITIAL_VELOCITY_FACTOR = 0.1; // Factor to adjust initial velocity
+const INITIAL_VELOCITY_FACTOR = 0.1 * INITIAL_VELOCITY_FACTOR_MULTIPLIER; // Adjusted initial velocity
 
-// Constants
-const STAR_TYPES = [
-  "mainSequence",
-  "redGiant",
-  "whiteDwarf",
-  "blueGiant",
-  "supergiant",
-];
-const PLANET_TYPES = ["terrestrial", "gasGiant", "iceGiant", "dwarfPlanet"];
 const MAX_PLANETS = 10;
 const MOON_COUNT_RANGE = [0, 5];
-const ASTEROID_COUNT = 200;
-const NEBULA_PARTICLE_COUNT = 4000;
+const ASTEROID_COUNT = 200 * ASTEROID_COUNT_MULTIPLIER;
+const NEBULA_PARTICLE_COUNT = 4000 * NEBULA_PARTICLE_COUNT_MULTIPLIER;
 const ORBITAL_PERIODS = [
   0.0005, 0.0004, 0.0003, 0.0002, 0.00015, 0.0001, 0.00008, 0.00005, 0.00003,
   0.00001,
 ];
 const PLANET_RADIUS = [
   0.05, 0.07, 0.09, 0.11, 0.13, 0.15, 0.17, 0.19, 0.21, 0.23,
-];
+].map((radius) => radius * PLANET_RADIUS_MULTIPLIER);
 
 // Create a material with optional parameters
 function createMaterial(color, options = {}) {
@@ -43,34 +57,10 @@ function createMaterial(color, options = {}) {
 
 // Create stars with realistic properties
 function createStar(type, radius, mass) {
-  let color, emissiveColor, intensity;
-  switch (type) {
-    case "redGiant":
-      color = 0xff4500;
-      emissiveColor = 0xff6347;
-      intensity = 0.8;
-      break;
-    case "whiteDwarf":
-      color = 0xffffff;
-      emissiveColor = 0xffffff;
-      intensity = 1.5;
-      break;
-    case "blueGiant":
-      color = 0x1e90ff;
-      emissiveColor = 0x1e90ff;
-      intensity = 1.2;
-      break;
-    case "supergiant":
-      color = 0xff6347;
-      emissiveColor = 0xff4500;
-      intensity = 0.6;
-      break;
-    default:
-      color = 0xffff00;
-      emissiveColor = 0xffff00;
-      intensity = 1.5;
-      break;
-  }
+  const color = STAR_COLORS[type] || STAR_COLORS.mainSequence;
+  const emissiveColor = color;
+  const intensity = type === "mainSequence" ? 1.5 : 0.8;
+
   const geometry = new THREE.SphereGeometry(radius, 64, 64);
   return new THREE.Mesh(
     geometry,
@@ -88,7 +78,7 @@ function createPlanet(type, radius) {
   const texture = new THREE.TextureLoader().load(textureURL);
   return new THREE.Mesh(
     geometry,
-    createMaterial(0xffffff, {
+    createMaterial(PLANET_COLORS[type] || 0xffffff, {
       map: texture,
       bumpMap: texture,
       bumpScale: 0.05,
@@ -100,7 +90,7 @@ function createPlanet(type, radius) {
 function createMoon(radius) {
   return new THREE.Mesh(
     new THREE.SphereGeometry(radius, 32, 32),
-    createMaterial(0x888888, {
+    createMaterial(MOON_COLOR, {
       bumpMap: new THREE.TextureLoader().load(
         "https://example.com/moon_texture.jpg"
       ),
@@ -128,7 +118,7 @@ function createAsteroid() {
     Math.random() * 0.03 + 0.01,
     1
   );
-  return new THREE.Mesh(geometry, createMaterial(0x888888)).position.set(
+  return new THREE.Mesh(geometry, createMaterial(ASTEROID_COLOR)).position.set(
     (Math.random() - 0.5) * 20,
     (Math.random() - 0.5) * 20,
     (Math.random() - 0.5) * 20
@@ -149,7 +139,7 @@ function createNebula() {
   particles.setAttribute("position", new THREE.BufferAttribute(positions, 3));
   return new THREE.Points(
     particles,
-    createMaterial(0xaaaaaa, { size: 0.2, transparent: true, opacity: 0.6 })
+    createMaterial(NEBULA_COLOR, { size: 0.2, transparent: true, opacity: 0.6 })
   );
 }
 
@@ -160,7 +150,6 @@ function addLighting() {
   sunLight.position.set(0, 0, 0);
   scene.add(sunLight);
 
-  // Add realistic shadows
   sunLight.castShadow = true;
   sunLight.shadow.mapSize.width = 2048;
   sunLight.shadow.mapSize.height = 2048;
@@ -193,16 +182,6 @@ function createRimIndicators(orbitRadius) {
   return [innerRim, outerRim];
 }
 
-// Calculate orbital radius based on gravitational parameters
-function calculateOrbitalRadius(index) {
-  return MIN_DISTANCE_FROM_STAR + index * 1.5;
-}
-
-// Calculate orbital velocity
-function calculateOrbitalVelocity(mass, radius) {
-  return Math.sqrt((G * mass) / radius);
-}
-
 // Initialize the scene
 function init() {
   scene = new THREE.Scene();
@@ -216,18 +195,19 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
-  // Post-processing setup
   composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
-  const bloomPass = new UnrealBloomPass(
-    new THREE.Vector2(window.innerWidth, window.innerHeight),
-    1.5,
-    0.4,
-    0.85
-  );
-  composer.addPass(bloomPass);
 
-  // Create central star
+  if (ENABLE_BLOOM) {
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      1.5,
+      0.4,
+      0.85
+    );
+    composer.addPass(bloomPass);
+  }
+
   const centralStar = createStar("mainSequence", 2, 1.0);
   scene.add(centralStar);
   celestialBodies.push({
@@ -240,16 +220,18 @@ function init() {
     moons: [],
   });
 
-  // Create other stars
-  const otherStarCount = Math.floor(Math.random() * 2) + 1; // 1 or 2 additional stars
+  const otherStarCount = Math.floor(Math.random() * 2) + 1;
   for (let i = 0; i < otherStarCount; i++) {
-    const starType = STAR_TYPES[Math.floor(Math.random() * STAR_TYPES.length)];
-    const starMass = Math.random() * 1 + 0.5; // Mass of the star
+    const starType =
+      Object.keys(STAR_COLORS)[
+        Math.floor(Math.random() * Object.keys(STAR_COLORS).length)
+      ];
+    const starMass = Math.random() * 1 + 0.5;
     const star = createStar(starType, 0.5, starMass);
     let distance;
     do {
       distance = Math.random() * 10 + 5;
-    } while (distance < MIN_DISTANCE_FROM_STAR); // Ensure distance is valid
+    } while (distance < MIN_DISTANCE_FROM_STAR * MIN_DISTANCE_MULTIPLIER);
     star.position.set(
       Math.random() * 2 * distance - distance,
       0,
@@ -261,43 +243,42 @@ function init() {
       mass: starMass,
       orbitRadius: distance,
       revolutionSpeed: Math.random() * 0.001 + 0.0005,
-      velocity: new THREE.Vector3(0, Math.sqrt((G * starMass) / distance), 0), // Circular orbit velocity
+      velocity: new THREE.Vector3(0, Math.sqrt((G * starMass) / distance), 0),
       angle: Math.random() * Math.PI * 2,
       moons: [],
     });
   }
 
-  // Create planets
   for (let i = 0; i < MAX_PLANETS; i++) {
     const radius = PLANET_RADIUS[i % PLANET_RADIUS.length];
     const planetType =
-      PLANET_TYPES[Math.floor(Math.random() * PLANET_TYPES.length)];
+      Object.keys(PLANET_COLORS)[
+        Math.floor(Math.random() * Object.keys(PLANET_COLORS).length)
+      ];
     const planet = createPlanet(planetType, radius);
     const orbitRadius = calculateOrbitalRadius(i);
     const velocity = calculateOrbitalVelocity(
       celestialBodies[0].mass,
       orbitRadius
     );
-    if (orbitRadius >= MIN_DISTANCE_FROM_STAR) {
-      planet.position.set(orbitRadius, 0, 0); // Initial position
+    if (orbitRadius >= MIN_DISTANCE_FROM_STAR * MIN_DISTANCE_MULTIPLIER) {
+      planet.position.set(orbitRadius, 0, 0);
       scene.add(planet);
       celestialBodies.push({
         mesh: planet,
         orbitRadius: orbitRadius,
         revolutionSpeed: ORBITAL_PERIODS[i % ORBITAL_PERIODS.length],
-        velocity: new THREE.Vector3(0, velocity * INITIAL_VELOCITY_FACTOR, 0), // Adjusted initial velocity
+        velocity: new THREE.Vector3(0, velocity * INITIAL_VELOCITY_FACTOR, 0),
         angle: Math.random() * Math.PI * 2,
         moons: [],
       });
 
-      if (Math.random() > 0.5) {
-        // Randomly add rings
+      if (SHOW_RINGS && Math.random() > 0.5) {
         planet.add(
           createRing(radius * 1.5, radius * 1.5 + Math.random() * 0.1)
         );
       }
 
-      // Add moons
       const numMoons =
         Math.floor(
           Math.random() * (MOON_COUNT_RANGE[1] - MOON_COUNT_RANGE[0] + 1)
@@ -319,19 +300,16 @@ function init() {
         });
       }
 
-      // Add dynamic rim indicators
       const [innerRim, outerRim] = createRimIndicators(orbitRadius);
       scene.add(innerRim);
       scene.add(outerRim);
     }
   }
 
-  // Add asteroids
   for (let i = 0; i < ASTEROID_COUNT; i++) {
     scene.add(createAsteroid());
   }
 
-  // Add nebula
   scene.add(createNebula());
   addLighting();
 
