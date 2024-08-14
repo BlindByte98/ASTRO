@@ -1,12 +1,48 @@
 # ASTRO
 
-## Overview
+---
+
+## 🌟 Overview
 
 ASTRO is a cutting-edge 3D procedural star system simulation that offers a realistic and immersive exploration of celestial mechanics. Developed using [Three.js](https://threejs.org/), ASTRO combines high-fidelity visuals with detailed physics and astrophysical modeling to create a scientifically accurate simulation of star systems.
 
 ![ax](https://github.com/user-attachments/assets/bab92f5d-ce84-4a7e-9a58-efdc3c963384)
 
-## Features
+---
+
+## 📑 Table of Contents
+
+1. [🚀 Live Demo](#-live-demo)
+2. [📝 Changelog](#-changelog)
+3. [✨ Features](#-features)
+    - [Realistic Simulation](#realistic-simulation)
+    - [Detailed Physical Properties](#detailed-physical-properties)
+    - [Immersive Visuals](#immersive-visuals)
+    - [Accurate Center of Mass](#accurate-center-of-mass)
+    - [Supported Objects](#supported-objects)
+4. [🚀 Installation](#-installation)
+5. [📖 Usage](#-usage)
+6. [⚙️ Configuration](#-configuration)
+7. [🤝 Contributing](#-contributing)
+8. [📝 License](#-license)
+9. [🙏 Acknowledgments](#-acknowledgments)
+10. [📬 Contact](#-contact)
+
+---
+
+## 🚀 Live Demo
+
+Experience the simulation in action by visiting the [Live Demo](https://blindbyte98.github.io/ASTRO/). The project and demo were tested and developed on a semi-modern Windows desktop PC using the Google Chrome browser.
+
+---
+
+## 📝 Changelog
+
+Check out the [Changelog](https://github.com/BlindByte98/ASTRO/blob/main/CHANGELOG.md) for updates.
+
+---
+
+## ✨ Features
 
 ### Realistic Simulation
 
@@ -79,15 +115,7 @@ ASTRO currently supports a variety of celestial objects, each with unique charac
 
 ---
 
-## Demo
-
-To view the simulation in action, visit the [live demo](https://blindbyte98.github.io/ASTRO/). 
-
-The project and demo were tested and developed on a semi-modern Windows desktop PC using the Google Chrome browser.
-
----
-
-## Installation
+## 🚀 Installation
 
 To run ASTRO locally, follow these steps:
 
@@ -115,17 +143,21 @@ To run ASTRO locally, follow these steps:
 
     Open your browser and go to `http://localhost:8080` (or the port specified by your HTTP server).
 
-## Usage
+---
+
+## 📖 Usage
 
 Explore the star system with interactive controls, observe celestial dynamics, and adjust simulation settings for a personalized experience.
 
-## Configuration
+---
+
+## ⚙️ Configuration
 
 Modify simulation parameters in the `index.html` file to adjust star types, planetary properties, and orbital mechanics.
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 We welcome and value contributions to the **ASTRO** simulation. To ensure our project’s quality and consistency, please adhere to the following principles:
 
@@ -142,16 +174,20 @@ By adhering to these principles, you help make **ASTRO** a premier tool for both
 
 ---
 
-## License
+## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+---
+
+## 🙏 Acknowledgments
 
 - **[Three.js](https://threejs.org/)**: For providing the powerful 3D rendering library.
 - **[OrbitControls](https://threejs.org/examples/#orbitcontrols)**: For interactive camera controls.
 
-## Contact
+---
+
+## 📬 Contact
 
 This software was created by **BlindByte**. Connect with me:
 
@@ -161,4 +197,3 @@ This software was created by **BlindByte**. Connect with me:
 For questions or further information, feel free to reach out via the above links.
 
 ---
-
